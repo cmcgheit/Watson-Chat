@@ -10,7 +10,6 @@ import Foundation
 import JSQMessagesViewController
 
 enum User: String {
-    // JSQMessage Cases
     case me = "053496-4509-288"
     case watson = "053496-4509-289"
     

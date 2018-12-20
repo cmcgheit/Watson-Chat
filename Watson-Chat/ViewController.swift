@@ -7,13 +7,12 @@
 //
 
 import UIKit
-import JSQMessagesViewController
 import AVFoundation
-import ConversationV1
-import SpeechToTextV1
-import TextToSpeechV1
+import JSQMessagesViewController
+import Speech
+// import Assistant
 
-class ViewController: JSQMessagesViewController  {
+class ViewController: JSQMessagesViewController {
     
     var messages = [JSQMessage]()
     var incomingBubble: JSQMessagesBubbleImage!
@@ -42,17 +41,17 @@ extension ViewController {
     /// Instantiate the Watson services
     func setupWatsonServices() {
         conversation = Conversation(
-            username: "Credentials.ConversationUsername",
-            password: "Credentials.ConversationPassword",
-            version: "2017-06-21"
+            username: Credentials.ConversationUsername,
+            password: Credentials.ConversationPassword,
+            version: "2017-05-26"
         )
         speechToText = SpeechToText(
-            username: "Credentials.SpeechToTextUsername",
-            password: "Credentials.SpeechToTextPassword"
+            username: Credentials.SpeechToTextUsername,
+            password: Credentials.SpeechToTextPassword
         )
         textToSpeech = TextToSpeech(
-            username: "Credentials.TextToSpeechUsername",
-            password: "Credentials.TextToSpeechPassword"
+            username: Credentials.TextToSpeechUsername,
+            password: Credentials.TextToSpeechPassword
         )
     }
     
@@ -64,7 +63,9 @@ extension ViewController {
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(title: "Ok", style: .default))
-        present(alert, animated: true)
+        DispatchQueue.main.async {
+            self.present(alert, animated: true)
+        }
     }
     
     /// Start a new conversation
@@ -78,7 +79,7 @@ extension ViewController {
     
     /// Present a conversation reply and speak it to the user
     func presentResponse(_ response: MessageResponse) {
-        guard let text = response.output.text.first else { return }
+        let text = response.output.text.joined()
         context = response.context // save context to continue conversation
         
         // synthesize and speak the response
@@ -103,10 +104,9 @@ extension ViewController {
     }
     
     /// Start transcribing microphone audio
-    func startTranscribing() {
+    @objc func startTranscribing() {
         audioPlayer?.stop()
         var settings = RecognitionSettings(contentType: .opus)
-        settings.continuous = true
         settings.interimResults = true
         speechToText.recognizeMicrophone(settings: settings, failure: failure) { results in
             self.inputToolbar.contentView.textView.text = results.bestTranscript
@@ -115,7 +115,7 @@ extension ViewController {
     }
     
     /// Stop transcribing microphone audio
-    func stopTranscribing() {
+    @objc func stopTranscribing() {
         speechToText.stopRecognizeMicrophone()
     }
 }
@@ -124,17 +124,17 @@ extension ViewController {
 extension ViewController {
     
     func setupInterface() {
-        // bubbles
+        // Message
         let factory = JSQMessagesBubbleImageFactory()
         let incomingColor = UIColor.jsq_messageBubbleLightGray()
         let outgoingColor = UIColor.jsq_messageBubbleGreen()
         incomingBubble = factory!.incomingMessagesBubbleImage(with: incomingColor)
         outgoingBubble = factory!.outgoingMessagesBubbleImage(with: outgoingColor)
         
-        // avatars
+        // Avatars
         collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSize.zero
         
-        // microphone button
+        // Mic Button
         let microphoneButton = UIButton(type: .custom)
         microphoneButton.setImage(#imageLiteral(resourceName: "microphone"), for: .normal)
         microphoneButton.setImage(#imageLiteral(resourceName: "microphone-hollow"), for: .highlighted)
@@ -142,6 +142,7 @@ extension ViewController {
         microphoneButton.addTarget(self, action: #selector(stopTranscribing), for: .touchUpInside)
         microphoneButton.addTarget(self, action: #selector(stopTranscribing), for: .touchUpOutside)
         inputToolbar.contentView.leftBarButtonItem = microphoneButton
+        
     }
     
     func setupSender() {
@@ -154,8 +155,8 @@ extension ViewController {
         withMessageText text: String!,
         senderId: String!,
         senderDisplayName: String!,
-        date: Date!)
-    {
+        date: Date!) {
+        
         let message = JSQMessage(
             senderId: User.me.rawValue,
             senderDisplayName: User.getName(User.me),
@@ -197,29 +198,26 @@ extension ViewController {
     override func collectionView(
         _ collectionView: JSQMessagesCollectionView!,
         messageDataForItemAt indexPath: IndexPath!)
-        -> JSQMessageData!
-    {
-        return messages[indexPath.item]
+        -> JSQMessageData! {
+            return messages[indexPath.item]
     }
     
     override func collectionView(
         _ collectionView: JSQMessagesCollectionView!,
         messageBubbleImageDataForItemAt indexPath: IndexPath!)
-        -> JSQMessageBubbleImageDataSource!
-    {
-        let message = messages[indexPath.item]
-        let isOutgoing = (message.senderId == senderId)
-        let bubble = (isOutgoing) ? outgoingBubble : incomingBubble
-        return bubble
+        -> JSQMessageBubbleImageDataSource! {
+            let message = messages[indexPath.item]
+            let isOutgoing = (message.senderId == senderId)
+            let bubble = (isOutgoing) ? outgoingBubble : incomingBubble
+            return bubble
     }
     
     override func collectionView(
         _ collectionView: JSQMessagesCollectionView!,
         avatarImageDataForItemAt indexPath: IndexPath!)
-        -> JSQMessageAvatarImageDataSource!
-    {
-        let message = messages[indexPath.item]
-        return User.getAvatar(message.senderId)
+        -> JSQMessageAvatarImageDataSource! {
+            let message = messages[indexPath.item]
+            return User.getAvatar(message.senderId)
     }
     
     override func collectionView(
@@ -238,4 +236,3 @@ extension ViewController {
         return jsqCell
     }
 }
-

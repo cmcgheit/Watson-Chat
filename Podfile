@@ -6,8 +6,10 @@ target 'Watson-Chat' do
   use_frameworks!
 
   # Pods for Watson-Chat
-
   pod 'JSQMessagesViewController'
+  pod 'IBMWatsonAssistantV1'
+  pod 'IBMWatsonSpeechToTextV1'
+  pod 'IBMWatsonTextToSpeechV1'
 
   target 'Watson-ChatTests' do
     inherit! :search_paths
