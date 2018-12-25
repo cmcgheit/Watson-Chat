@@ -12,9 +12,9 @@ Included:
 ### Things to Update
 
 - [x] Cocoapods version
-- [ ] Swift 4/Xcode 10 update
+- [x] Swift 4/Xcode 10 update
+- [x] add [MessageKit](https://github.com/MessageKit/MessageKit "MessageKit")
 - [ ] Implement Google Maps/Buying Online
-- [ ] add [MessageKit](https://github.com/MessageKit/MessageKit "MessageKit")
 
 ### Screenshots
 
