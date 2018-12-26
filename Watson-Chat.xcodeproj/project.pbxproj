@@ -16,6 +16,8 @@
 		6ACB33A821D3DF93002E9BD5 /* AssistantMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB33A721D3DF93002E9BD5 /* AssistantMessages.swift */; };
 		6ACB33AA21D3DFF7002E9BD5 /* BMSCredentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6ACB33A921D3DFF7002E9BD5 /* BMSCredentials.plist */; };
 		6ACB33AC21D3E02D002E9BD5 /* AssistantError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB33AB21D3E02D002E9BD5 /* AssistantError.swift */; };
+		6ACB33AE21D3F1E8002E9BD5 /* AssistantV1.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ACB33AD21D3F1E8002E9BD5 /* AssistantV1.framework */; };
+		6ACB33B021D3F1F7002E9BD5 /* RestKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ACB33AF21D3F1F7002E9BD5 /* RestKit.framework */; };
 		95CC37107D810BA23968F55D /* Pods_Watson_ChatTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F93DF2C62E2E5909F25890 /* Pods_Watson_ChatTests.framework */; };
 		EA8E6EDCFDA46F6479D9E14A /* Pods_Watson_Chat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DF4C7EC67FE7301734AD018 /* Pods_Watson_Chat.framework */; };
 /* End PBXBuildFile section */
@@ -47,6 +49,8 @@
 		6ACB33A721D3DF93002E9BD5 /* AssistantMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistantMessages.swift; sourceTree = "<group>"; };
 		6ACB33A921D3DFF7002E9BD5 /* BMSCredentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BMSCredentials.plist; sourceTree = "<group>"; };
 		6ACB33AB21D3E02D002E9BD5 /* AssistantError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistantError.swift; sourceTree = "<group>"; };
+		6ACB33AD21D3F1E8002E9BD5 /* AssistantV1.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssistantV1.framework; path = Carthage/Build/iOS/AssistantV1.framework; sourceTree = "<group>"; };
+		6ACB33AF21D3F1F7002E9BD5 /* RestKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RestKit.framework; path = Carthage/Build/iOS/RestKit.framework; sourceTree = "<group>"; };
 		9DF4C7EC67FE7301734AD018 /* Pods_Watson_Chat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Watson_Chat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A23EF7A358160299264E7FCA /* Pods-Watson-ChatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Watson-ChatTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Watson-ChatTests/Pods-Watson-ChatTests.release.xcconfig"; sourceTree = "<group>"; };
 		F3F93DF2C62E2E5909F25890 /* Pods_Watson_ChatTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Watson_ChatTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -57,6 +61,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6ACB33B021D3F1F7002E9BD5 /* RestKit.framework in Frameworks */,
+				6ACB33AE21D3F1E8002E9BD5 /* AssistantV1.framework in Frameworks */,
 				EA8E6EDCFDA46F6479D9E14A /* Pods_Watson_Chat.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -75,6 +81,8 @@
 		3E5855A4A722D465DCA68AD4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6ACB33AF21D3F1F7002E9BD5 /* RestKit.framework */,
+				6ACB33AD21D3F1E8002E9BD5 /* AssistantV1.framework */,
 				9DF4C7EC67FE7301734AD018 /* Pods_Watson_Chat.framework */,
 				F3F93DF2C62E2E5909F25890 /* Pods_Watson_ChatTests.framework */,
 			);
@@ -317,12 +325,18 @@
 			files = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/AssistantV1.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RestKit.framework",
+			);
+			outputFileListPaths = (
 			);
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/$(FRAMEWORKS_FOLDER_PATH)/AssistantV1.framework",
+				"$(DERIVED_FILE_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RestKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\n";
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
 		B4FFEF893C147015CC119E61 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -513,6 +527,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 48HD6AZC2E;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = "Watson-Chat/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -530,6 +548,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 48HD6AZC2E;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = "Watson-Chat/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
