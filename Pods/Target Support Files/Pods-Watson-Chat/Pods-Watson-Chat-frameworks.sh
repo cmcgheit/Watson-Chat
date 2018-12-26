@@ -145,26 +145,14 @@ strip_invalid_archs() {
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/BMSAnalyticsAPI/BMSAnalyticsAPI.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/BMSCore/BMSCore.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/IBMWatsonAssistantV1/Assistant.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/IBMWatsonAssistantV2/Assistant.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/IBMWatsonRestKit/RestKit.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/IBMWatsonSpeechToTextV1/SpeechToText.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/IBMWatsonTextToSpeechV1/TextToSpeech.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/MessageInputBar/MessageInputBar.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/MessageKit/MessageKit.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/BMSAnalyticsAPI/BMSAnalyticsAPI.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/BMSCore/BMSCore.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/IBMWatsonAssistantV1/Assistant.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/IBMWatsonAssistantV2/Assistant.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/IBMWatsonRestKit/RestKit.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/IBMWatsonSpeechToTextV1/SpeechToText.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/IBMWatsonTextToSpeechV1/TextToSpeech.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/MessageInputBar/MessageInputBar.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/MessageKit/MessageKit.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait

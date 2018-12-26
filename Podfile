@@ -7,10 +7,6 @@ target 'Watson-Chat' do
 
   # Pods for Watson-Chat
   pod 'BMSCore'
-  pod 'IBMWatsonAssistantV1'
-  pod 'IBMWatsonAssistantV2'
-  pod 'IBMWatsonSpeechToTextV1'
-  pod 'IBMWatsonTextToSpeechV1'
   pod 'MessageKit'
 
   post_install do |installer|
@@ -22,7 +18,7 @@ target 'Watson-Chat' do
               end
           end
       end
-      
+
   target 'Watson-ChatTests' do
     inherit! :search_paths
     # Pods for testing

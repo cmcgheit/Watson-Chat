@@ -13,6 +13,9 @@
 		6A17C34C1EF6EC610047CBA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A17C34B1EF6EC610047CBA5 /* Assets.xcassets */; };
 		6A17C34F1EF6EC610047CBA5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A17C34D1EF6EC610047CBA5 /* LaunchScreen.storyboard */; };
 		6A17C35A1EF6EC610047CBA5 /* Watson_ChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A17C3591EF6EC610047CBA5 /* Watson_ChatTests.swift */; };
+		6ACB33A821D3DF93002E9BD5 /* AssistantMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB33A721D3DF93002E9BD5 /* AssistantMessages.swift */; };
+		6ACB33AA21D3DFF7002E9BD5 /* BMSCredentials.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6ACB33A921D3DFF7002E9BD5 /* BMSCredentials.plist */; };
+		6ACB33AC21D3E02D002E9BD5 /* AssistantError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB33AB21D3E02D002E9BD5 /* AssistantError.swift */; };
 		95CC37107D810BA23968F55D /* Pods_Watson_ChatTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F93DF2C62E2E5909F25890 /* Pods_Watson_ChatTests.framework */; };
 		EA8E6EDCFDA46F6479D9E14A /* Pods_Watson_Chat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DF4C7EC67FE7301734AD018 /* Pods_Watson_Chat.framework */; };
 /* End PBXBuildFile section */
@@ -41,6 +44,9 @@
 		6A17C3551EF6EC610047CBA5 /* Watson-ChatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Watson-ChatTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A17C3591EF6EC610047CBA5 /* Watson_ChatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Watson_ChatTests.swift; sourceTree = "<group>"; };
 		6A17C35B1EF6EC610047CBA5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6ACB33A721D3DF93002E9BD5 /* AssistantMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistantMessages.swift; sourceTree = "<group>"; };
+		6ACB33A921D3DFF7002E9BD5 /* BMSCredentials.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BMSCredentials.plist; sourceTree = "<group>"; };
+		6ACB33AB21D3E02D002E9BD5 /* AssistantError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistantError.swift; sourceTree = "<group>"; };
 		9DF4C7EC67FE7301734AD018 /* Pods_Watson_Chat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Watson_Chat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A23EF7A358160299264E7FCA /* Pods-Watson-ChatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Watson-ChatTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Watson-ChatTests/Pods-Watson-ChatTests.release.xcconfig"; sourceTree = "<group>"; };
 		F3F93DF2C62E2E5909F25890 /* Pods_Watson_ChatTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Watson_ChatTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -137,6 +143,9 @@
 		6A649A0E1FD8E7BF006D55AA /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				6ACB33A921D3DFF7002E9BD5 /* BMSCredentials.plist */,
+				6ACB33A721D3DF93002E9BD5 /* AssistantMessages.swift */,
+				6ACB33AB21D3E02D002E9BD5 /* AssistantError.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -245,6 +254,7 @@
 			files = (
 				6A17C34F1EF6EC610047CBA5 /* LaunchScreen.storyboard in Resources */,
 				6A17C34C1EF6EC610047CBA5 /* Assets.xcassets in Resources */,
+				6ACB33AA21D3DFF7002E9BD5 /* BMSCredentials.plist in Resources */,
 				6A17C34A1EF6EC610047CBA5 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -268,26 +278,15 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Watson-Chat/Pods-Watson-Chat-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/BMSAnalyticsAPI/BMSAnalyticsAPI.framework",
 				"${BUILT_PRODUCTS_DIR}/BMSCore/BMSCore.framework",
-				"${BUILT_PRODUCTS_DIR}/IBMWatsonAssistantV1/Assistant.framework",
-				"${BUILT_PRODUCTS_DIR}/IBMWatsonAssistantV2/Assistant.framework",
-				"${BUILT_PRODUCTS_DIR}/IBMWatsonRestKit/RestKit.framework",
-				"${BUILT_PRODUCTS_DIR}/IBMWatsonSpeechToTextV1/SpeechToText.framework",
-				"${BUILT_PRODUCTS_DIR}/IBMWatsonTextToSpeechV1/TextToSpeech.framework",
 				"${BUILT_PRODUCTS_DIR}/MessageInputBar/MessageInputBar.framework",
 				"${BUILT_PRODUCTS_DIR}/MessageKit/MessageKit.framework",
-				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BMSAnalyticsAPI.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BMSCore.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Assistant.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RestKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SpeechToText.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TextToSpeech.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MessageInputBar.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MessageKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -350,8 +349,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6ACB33A821D3DF93002E9BD5 /* AssistantMessages.swift in Sources */,
 				6A17C3471EF6EC600047CBA5 /* ViewController.swift in Sources */,
 				6A17C3451EF6EC600047CBA5 /* AppDelegate.swift in Sources */,
+				6ACB33AC21D3E02D002E9BD5 /* AssistantError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
