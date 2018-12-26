@@ -4,4 +4,7 @@
    <FileRef
       location = "group:Watson-Chat.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:Pods/Pods.xcodeproj">
+   </FileRef>
 </Workspace>

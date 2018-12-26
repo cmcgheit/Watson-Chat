@@ -1,0 +1,6 @@
+framework module Pods_Watson_ChatTests {
+  umbrella header "Pods-Watson-ChatTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

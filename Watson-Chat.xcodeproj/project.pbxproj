@@ -13,6 +13,8 @@
 		6A17C34C1EF6EC610047CBA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A17C34B1EF6EC610047CBA5 /* Assets.xcassets */; };
 		6A17C34F1EF6EC610047CBA5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A17C34D1EF6EC610047CBA5 /* LaunchScreen.storyboard */; };
 		6A17C35A1EF6EC610047CBA5 /* Watson_ChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A17C3591EF6EC610047CBA5 /* Watson_ChatTests.swift */; };
+		95CC37107D810BA23968F55D /* Pods_Watson_ChatTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F93DF2C62E2E5909F25890 /* Pods_Watson_ChatTests.framework */; };
+		EA8E6EDCFDA46F6479D9E14A /* Pods_Watson_Chat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DF4C7EC67FE7301734AD018 /* Pods_Watson_Chat.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,6 +28,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		11150FE7E325CB6DDAECCB04 /* Pods-Watson-ChatTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Watson-ChatTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Watson-ChatTests/Pods-Watson-ChatTests.debug.xcconfig"; sourceTree = "<group>"; };
+		32A3C51412338DB54C7BFF24 /* Pods-Watson-Chat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Watson-Chat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Watson-Chat/Pods-Watson-Chat.debug.xcconfig"; sourceTree = "<group>"; };
+		34C8B949AE31662A93559543 /* Pods-Watson-Chat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Watson-Chat.release.xcconfig"; path = "Pods/Target Support Files/Pods-Watson-Chat/Pods-Watson-Chat.release.xcconfig"; sourceTree = "<group>"; };
 		6A17C3411EF6EC600047CBA5 /* Watson-Chat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Watson-Chat.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A17C3441EF6EC600047CBA5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6A17C3461EF6EC600047CBA5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -36,6 +41,9 @@
 		6A17C3551EF6EC610047CBA5 /* Watson-ChatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Watson-ChatTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A17C3591EF6EC610047CBA5 /* Watson_ChatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Watson_ChatTests.swift; sourceTree = "<group>"; };
 		6A17C35B1EF6EC610047CBA5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9DF4C7EC67FE7301734AD018 /* Pods_Watson_Chat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Watson_Chat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A23EF7A358160299264E7FCA /* Pods-Watson-ChatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Watson-ChatTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Watson-ChatTests/Pods-Watson-ChatTests.release.xcconfig"; sourceTree = "<group>"; };
+		F3F93DF2C62E2E5909F25890 /* Pods_Watson_ChatTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Watson_ChatTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA8E6EDCFDA46F6479D9E14A /* Pods_Watson_Chat.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,18 +59,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95CC37107D810BA23968F55D /* Pods_Watson_ChatTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3E5855A4A722D465DCA68AD4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9DF4C7EC67FE7301734AD018 /* Pods_Watson_Chat.framework */,
+				F3F93DF2C62E2E5909F25890 /* Pods_Watson_ChatTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		6A17C3381EF6EC5B0047CBA5 = {
 			isa = PBXGroup;
 			children = (
 				6A17C3431EF6EC600047CBA5 /* Watson-Chat */,
 				6A17C3581EF6EC610047CBA5 /* Watson-ChatTests */,
 				6A17C3421EF6EC600047CBA5 /* Products */,
+				EEFDA8320146A3818820BA68 /* Pods */,
+				3E5855A4A722D465DCA68AD4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -120,6 +141,17 @@
 			name = Model;
 			sourceTree = "<group>";
 		};
+		EEFDA8320146A3818820BA68 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				32A3C51412338DB54C7BFF24 /* Pods-Watson-Chat.debug.xcconfig */,
+				34C8B949AE31662A93559543 /* Pods-Watson-Chat.release.xcconfig */,
+				11150FE7E325CB6DDAECCB04 /* Pods-Watson-ChatTests.debug.xcconfig */,
+				A23EF7A358160299264E7FCA /* Pods-Watson-ChatTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -127,10 +159,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6A17C35E1EF6EC620047CBA5 /* Build configuration list for PBXNativeTarget "Watson-Chat" */;
 			buildPhases = (
+				B4FFEF893C147015CC119E61 /* [CP] Check Pods Manifest.lock */,
 				6A17C33D1EF6EC5F0047CBA5 /* Sources */,
 				6A17C33E1EF6EC5F0047CBA5 /* Frameworks */,
 				6A17C33F1EF6EC5F0047CBA5 /* Resources */,
 				6A8798921F9C5EC000823BCE /* ShellScript */,
+				2DD1F85F7DBA256B92D28DB1 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -145,6 +179,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6A17C3611EF6EC620047CBA5 /* Build configuration list for PBXNativeTarget "Watson-ChatTests" */;
 			buildPhases = (
+				66567EC2169CD2C40D9C3418 /* [CP] Check Pods Manifest.lock */,
 				6A17C3511EF6EC610047CBA5 /* Sources */,
 				6A17C3521EF6EC610047CBA5 /* Frameworks */,
 				6A17C3531EF6EC610047CBA5 /* Resources */,
@@ -224,6 +259,59 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		2DD1F85F7DBA256B92D28DB1 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Watson-Chat/Pods-Watson-Chat-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/BMSAnalyticsAPI/BMSAnalyticsAPI.framework",
+				"${BUILT_PRODUCTS_DIR}/BMSCore/BMSCore.framework",
+				"${BUILT_PRODUCTS_DIR}/IBMWatsonAssistantV1/Assistant.framework",
+				"${BUILT_PRODUCTS_DIR}/IBMWatsonAssistantV2/Assistant.framework",
+				"${BUILT_PRODUCTS_DIR}/IBMWatsonRestKit/RestKit.framework",
+				"${BUILT_PRODUCTS_DIR}/IBMWatsonSpeechToTextV1/SpeechToText.framework",
+				"${BUILT_PRODUCTS_DIR}/IBMWatsonTextToSpeechV1/TextToSpeech.framework",
+				"${BUILT_PRODUCTS_DIR}/MessageInputBar/MessageInputBar.framework",
+				"${BUILT_PRODUCTS_DIR}/MessageKit/MessageKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BMSAnalyticsAPI.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BMSCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Assistant.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RestKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SpeechToText.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TextToSpeech.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MessageInputBar.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MessageKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Watson-Chat/Pods-Watson-Chat-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		66567EC2169CD2C40D9C3418 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Watson-ChatTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		6A8798921F9C5EC000823BCE /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -235,8 +323,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "
-";
+			shellScript = "\n";
+		};
+		B4FFEF893C147015CC119E61 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Watson-Chat-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -403,6 +508,7 @@
 		};
 		6A17C35F1EF6EC620047CBA5 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 32A3C51412338DB54C7BFF24 /* Pods-Watson-Chat.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 48HD6AZC2E;
@@ -419,6 +525,7 @@
 		};
 		6A17C3601EF6EC620047CBA5 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 34C8B949AE31662A93559543 /* Pods-Watson-Chat.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 48HD6AZC2E;
@@ -435,6 +542,7 @@
 		};
 		6A17C3621EF6EC620047CBA5 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 11150FE7E325CB6DDAECCB04 /* Pods-Watson-ChatTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -451,6 +559,7 @@
 		};
 		6A17C3631EF6EC620047CBA5 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A23EF7A358160299264E7FCA /* Pods-Watson-ChatTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
