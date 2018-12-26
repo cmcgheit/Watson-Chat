@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import AssistantV1
 import MessageKit
+import MapKit
 import BMSCore
 
 class ViewController: MessagesViewController {

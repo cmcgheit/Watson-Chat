@@ -19,15 +19,10 @@ import Foundation
 enum AssistantError: Error, CustomStringConvertible {
     
     case invalidCredentials
-    
     case missingCredentialsPlist
-    
     case missingAssistantCredentials
-    
     case noWorkspacesAvailable
-    
     case error(String)
-    
     case noWorkspaceId
     
     var alertTitle: String {
