@@ -26,7 +26,7 @@ class ViewController: MessagesViewController {
     var workspaceID: String?
     
     // Users
-    var current = Sender(id: "123456", displayName: "Customer")
+    var current = Sender(id: "123456", displayName: "You")
     let watson = Sender(id: "654321", displayName: "Watson")
     
     override func viewDidLoad() {
