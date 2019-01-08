@@ -112,14 +112,18 @@ class ViewController: MessagesViewController {
         } else {
             
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5) {
-                // Check training message
+                // Check for training
             }
-            // Retrieve a list of Workspaces/default to the first one
+            
+            // Retrieve a list of Workspaces that have been trained and default to the first one
+            // You can define your own WorkspaceID if you have a specific Assistant model you want to work with
             guard let assistant = assistant else {
                 return
             }
+            
             assistant.listWorkspaces(failure: failAssistantWithError,
                                      success: workspaceList)
+            
         }
     }
     
