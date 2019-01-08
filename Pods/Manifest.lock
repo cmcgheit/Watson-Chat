@@ -1,3 +1,24 @@
-PODFILE CHECKSUM: 1cc7c897e8ad3e478a16b95139be2d991c89e28d
+PODS:
+  - BMSAnalyticsAPI (2.2.3)
+  - BMSCore (2.3.5):
+    - BMSAnalyticsAPI (~> 2.2)
+  - MessageKit (0.13.5)
+
+DEPENDENCIES:
+  - BMSCore (~> 2.0)
+  - MessageKit (~> 0.13)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - BMSAnalyticsAPI
+    - BMSCore
+    - MessageKit
+
+SPEC CHECKSUMS:
+  BMSAnalyticsAPI: d259379069bb11d2ff365bf5b796a2677dfc3849
+  BMSCore: 446c16a7dbe14b5019751617a00dd947c65cca82
+  MessageKit: c4bd50e285a0f0761bc23a2e982aa7840873c4f5
+
+PODFILE CHECKSUM: 94804279faf2ee0e066a2d8cb8e001f5cbea0333
 
 COCOAPODS: 1.5.2

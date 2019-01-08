@@ -6,7 +6,9 @@ target 'Watson-Chat' do
   use_frameworks!
 
   # Pods for Watson-Chat
- 
+  pod 'BMSCore', '~> 2.0'
+  pod 'MessageKit', '~> 0.13'
+  
   post_install do |installer|
           installer.pods_project.targets.each do |target|
               if ['SwiftCloudant'].include? target.name
