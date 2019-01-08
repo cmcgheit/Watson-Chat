@@ -7,7 +7,7 @@ iOS app that features IBM's Watson chat bot. :icecream: Make a ice cream order t
 Included:
 
 - [IBM Bluemix](https://www.ibm.com/cloud-computing/bluemix/what-is-bluemix "IBM Bluemix")
-- [JSQMessagesViewController](https://github.com/jessesquires/JSQMessagesViewController "JSQMessagesViewController")
+- [MessageKit](https://github.com/MessageKit/MessageKit "MessageKit")
 
 ### Things to Update
 

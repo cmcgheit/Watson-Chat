@@ -1,28 +1,3 @@
-PODS:
-  - BMSAnalyticsAPI (2.2.3)
-  - BMSCore (2.3.5):
-    - BMSAnalyticsAPI (~> 2.2)
-  - MessageInputBar/Core (0.4.1)
-  - MessageKit (2.0.0):
-    - MessageInputBar/Core
-
-DEPENDENCIES:
-  - BMSCore
-  - MessageKit
-
-SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
-    - BMSAnalyticsAPI
-    - BMSCore
-    - MessageInputBar
-    - MessageKit
-
-SPEC CHECKSUMS:
-  BMSAnalyticsAPI: d259379069bb11d2ff365bf5b796a2677dfc3849
-  BMSCore: 446c16a7dbe14b5019751617a00dd947c65cca82
-  MessageInputBar: e81c7535347f1f7b923de7080409a535a004b6e4
-  MessageKit: 29c1c87e5a396d2ca7a3f712e5171dc9aba42a1e
-
-PODFILE CHECKSUM: e257fec58758ce14479ac60ef41ce9da8e4a5380
+PODFILE CHECKSUM: 1cc7c897e8ad3e478a16b95139be2d991c89e28d
 
 COCOAPODS: 1.5.2
