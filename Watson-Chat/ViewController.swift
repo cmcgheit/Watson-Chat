@@ -6,233 +6,500 @@
 //  Copyright © 2017 C McGhee. All rights reserved.
 //
 
+import Foundation
 import UIKit
-import AVFoundation
-import JSQMessagesViewController
-import Speech
-// import Assistant
+import AssistantV1
+import MessageKit
+import MapKit
+import BMSCore
 
-class ViewController: JSQMessagesViewController {
+class ViewController: MessagesViewController {
     
-    var messages = [JSQMessage]()
-    var incomingBubble: JSQMessagesBubbleImage!
-    var outgoingBubble: JSQMessagesBubbleImage!
+    fileprivate let kCollectionViewCellHeight: CGFloat = 12.5
     
-    var conversation: Conversation!
-    var speechToText: SpeechToText!
-    var textToSpeech: TextToSpeech!
+    var messageList: [AssistantMessages] = []
     
-    var audioPlayer: AVAudioPlayer?
-    var workspace = Credentials.ConversationWorkspace
+    var now = Date()
+    
+    var assistant: Assistant?
     var context: Context?
+    
+    var workspaceID: String?
+    
+    // Users
+    var current = Sender(id: "123456", displayName: "You")
+    let watson = Sender(id: "654321", displayName: "Watson")
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupInterface()
-        setupSender()
-        setupWatsonServices()
-        startConversation()
-    }
-}
-
-// MARK: Watson Services
-extension ViewController {
-    
-    /// Instantiate the Watson services
-    func setupWatsonServices() {
-        conversation = Conversation(
-            username: Credentials.ConversationUsername,
-            password: Credentials.ConversationPassword,
-            version: "2017-05-26"
-        )
-        speechToText = SpeechToText(
-            username: Credentials.SpeechToTextUsername,
-            password: Credentials.SpeechToTextPassword
-        )
-        textToSpeech = TextToSpeech(
-            username: Credentials.TextToSpeechUsername,
-            password: Credentials.TextToSpeechPassword
-        )
+        
+        // Instantiate Assistant Instance
+        self.instantiateAssistant()
+        
+        // Registers data sources and delegates + setup views
+        self.setupMessagesKit()
+        
+        // Register observer
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(didBecomeActive),
+                                               name: UIApplication.didBecomeActiveNotification,
+                                               object: nil)
+        
     }
     
-    /// Present an error message
-    func failure(error: Error) {
-        let alert = UIAlertController(
-            title: "Watson Error",
-            message: error.localizedDescription,
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: "Ok", style: .default))
+    @objc func didBecomeActive(_ notification: Notification) {
+        
+    }
+    
+    // MARK: - Setup Methods
+    // Method to instantiate assistant service
+    func instantiateAssistant() {
+        
+        // Activity Spinner?
+        
+        // Credentials
+        guard let configurationPath = Bundle.main.path(forResource: "BMSCredentials", ofType: "plist"),
+            let configuration = NSDictionary(contentsOfFile: configurationPath) else {
+                
+                showAlert(.missingCredentialsPlist)
+                return
+        }
+        
+        // API Version Date to initialize the Assistant API
+        let date = "2018-02-01"
+        
+        // Set the Watson credentials for Assistant service from the BMSCredentials.plist
+        // If using IAM authentication
+        if let apikey = configuration["conversationApikey"] as? String,
+            let url = configuration["conversationUrl"] as? String {
+            
+            // Initialize Watson Assistant object
+            let assistant = Assistant(version: date, apiKey: apikey)
+            
+            // Set the URL for the Assistant Service
+            assistant.serviceURL = url
+            
+            self.assistant = assistant
+            
+            // If using user/pwd authentication
+        } else if let password = configuration["conversationPassword"] as? String,
+            let username = configuration["conversationUsername"] as? String,
+            let url = configuration["conversationUrl"] as? String {
+            
+            // Initialize Watson Assistant object
+            let assistant = Assistant(username: username, password: password, version: date)
+            
+            // Set the URL for the Assistant Service
+            assistant.serviceURL = url
+            
+            self.assistant = assistant
+            
+        } else {
+            showAlert(.missingAssistantCredentials)
+        }
+        
+        // Workspace
+        if let workspaceID = configuration["workspaceID"] as? String {
+            
+            print("Workspace ID:", workspaceID)
+            
+            // Set the workspace ID Globally
+            self.workspaceID = workspaceID
+            
+            // Ask Watson for its first message
+            retrieveFirstMessage()
+            
+        } else {
+            
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5) {
+                // Check for training
+            }
+            
+            // Retrieve a list of Workspaces that have been trained and default to the first one
+            // You can define your own WorkspaceID if you have a specific Assistant model you want to work with
+            guard let assistant = assistant else {
+                return
+            }
+            
+            assistant.listWorkspaces(failure: failAssistantWithError,
+                                     success: workspaceList)
+            
+        }
+    }
+    
+    // Method to start convesation from workspace list
+    func workspaceList(_ list: WorkspaceCollection) {
+        
+        // training model deployed
+        guard let workspace = list.workspaces.first else {
+            showAlert(.noWorkspacesAvailable)
+            return
+        }
+        
+        // Check if we have a workspace ID
+        guard !workspace.workspaceID.isEmpty else {
+            showAlert(.noWorkspaceId)
+            return
+        }
+        
+        self.workspaceID = workspace.workspaceID
+        
+        // Ask Watson for its first message
+        retrieveFirstMessage()
+        
+    }
+    
+    // Method to handle errors with Watson Assistant
+    func failAssistantWithError(_ error: Error) {
+        showAlert(.error(error.localizedDescription))
+    }
+    
+    // MARK: - Message Kit Function
+    func setupMessagesKit() {
+        
+        // Register datasources and delegates
+        messagesCollectionView.messagesDataSource = self
+        messagesCollectionView.messagesLayoutDelegate = self
+        messagesCollectionView.messagesDisplayDelegate = self
+        messagesCollectionView.messageCellDelegate = self
+        messageInputBar.delegate = self
+        
+        // Configure views
+        messageInputBar.sendButton.tintColor = UIColor(red: 69/255, green: 193/255, blue: 89/255, alpha: 1)
+        scrollsToBottomOnKeybordBeginsEditing = true // default false
+        maintainPositionOnKeyboardFrameChanged = true // default false
+    }
+    
+    // Retrieves the first message from Watson
+    func retrieveFirstMessage() {
+        
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1.5) {
+            // Talking to Watson Message
+        }
+        
+        guard let assistant = self.assistant else {
+            showAlert(.missingAssistantCredentials)
+            return
+        }
+        
+        guard let workspace = workspaceID else {
+            showAlert(.noWorkspaceId)
+            return
+        }
+        
+        // Initial assistant message from Watson
+        assistant.message(workspaceID: workspace, failure: failAssistantWithError) { response in
+            
+            for watsonMessage in response.output.text {
+                
+                // Set current context
+                self.context = response.context
+                
+                DispatchQueue.main.async {
+                    
+                    // Add message to assistant message array
+                    let uniqueID = UUID().uuidString
+                    let date = self.dateAddingRandomTime()
+                    
+                    let attributedText = NSAttributedString(string: watsonMessage,
+                                                            attributes: [.font: UIFont.systemFont(ofSize: 14),
+                                                                         .foregroundColor: UIColor.blue])
+                    
+                    // Create a Message for adding to the Message View
+                    let message = AssistantMessages(attributedText: attributedText, sender: self.watson, messageId: uniqueID, date: date)
+                    
+                    // Add the response to the Message View
+                    self.messageList.insert(message, at: 0)
+                    self.messagesCollectionView.reloadData()
+                    self.messagesCollectionView.scrollToBottom()
+                }
+            }
+        }
+    }
+    
+    // Method to create a random date
+    func dateAddingRandomTime() -> Date {
+        let randomNumber = Int(arc4random_uniform(UInt32(10)))
+        var date: Date?
+        if randomNumber % 2 == 0 {
+            date = Calendar.current.date(byAdding: .hour, value: randomNumber, to: now) ?? Date()
+        } else {
+            let randomMinute = Int(arc4random_uniform(UInt32(59)))
+            date = Calendar.current.date(byAdding: .minute, value: randomMinute, to: now) ?? Date()
+        }
+        now = date ?? Date()
+        return now
+    }
+    
+    // Method to show an alert with an alertTitle String and alertMessage String
+    func showAlert(_ error: AssistantError) {
+        // Log the error to the console
+        print(error)
+        
         DispatchQueue.main.async {
-            self.present(alert, animated: true)
+            
+            // If an alert is not currently being displayed
+            if self.presentedViewController == nil {
+                // Set alert properties
+                let alert = UIAlertController(title: error.alertTitle,
+                                              message: error.alertMessage,
+                                              preferredStyle: .alert)
+                // Add an action to the alert
+                alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertAction.Style.default, handler: nil))
+                // Show the alert
+                self.present(alert, animated: true, completion: nil)
+            }
         }
     }
     
-    /// Start a new conversation
-    func startConversation() {
-        conversation.message(
-            withWorkspace: workspace,
-            failure: failure,
-            success: presentResponse
-        )
-    }
-    
-    /// Present a conversation reply and speak it to the user
-    func presentResponse(_ response: MessageResponse) {
-        let text = response.output.text.joined()
-        context = response.context // save context to continue conversation
-        
-        // synthesize and speak the response
-        textToSpeech.synthesize(text, failure: failure) { audio in
-            self.audioPlayer = try! AVAudioPlayer(data: audio)
-            self.audioPlayer?.prepareToPlay()
-            self.audioPlayer?.play()
+    // Method to retrieve assistant avatar
+    func getAvatarFor(sender: Sender) -> Avatar {
+        switch sender {
+        case current:
+            return Avatar(image: UIImage(named: "avatar_small"), initials: "GR")
+        case watson:
+            return Avatar(image: UIImage(named: "watson_avatar"), initials: "WAT")
+        default:
+            return Avatar()
         }
-        
-        // create message
-        let message = JSQMessage(
-            senderId: User.watson.rawValue,
-            displayName: User.getName(User.watson),
-            text: text
-        )
-        
-        // add message to chat window
-        if let message = message {
-            self.messages.append(message)
-            DispatchQueue.main.async { self.finishSendingMessage() }
-        }
-    }
-    
-    /// Start transcribing microphone audio
-    @objc func startTranscribing() {
-        audioPlayer?.stop()
-        var settings = RecognitionSettings(contentType: .opus)
-        settings.interimResults = true
-        speechToText.recognizeMicrophone(settings: settings, failure: failure) { results in
-            self.inputToolbar.contentView.textView.text = results.bestTranscript
-            self.inputToolbar.toggleSendButtonEnabled()
-        }
-    }
-    
-    /// Stop transcribing microphone audio
-    @objc func stopTranscribing() {
-        speechToText.stopRecognizeMicrophone()
     }
 }
 
-// MARK: Configuration
-extension ViewController {
+// MARK: - MessagesDataSource
+extension ViewController: MessagesDataSource {
     
-    func setupInterface() {
-        // Message
-        let factory = JSQMessagesBubbleImageFactory()
-        let incomingColor = UIColor.jsq_messageBubbleLightGray()
-        let outgoingColor = UIColor.jsq_messageBubbleGreen()
-        incomingBubble = factory!.incomingMessagesBubbleImage(with: incomingColor)
-        outgoingBubble = factory!.outgoingMessagesBubbleImage(with: outgoingColor)
-        
-        // Avatars
-        collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSize.zero
-        
-        // Mic Button
-        let microphoneButton = UIButton(type: .custom)
-        microphoneButton.setImage(#imageLiteral(resourceName: "microphone"), for: .normal)
-        microphoneButton.setImage(#imageLiteral(resourceName: "microphone-hollow"), for: .highlighted)
-        microphoneButton.addTarget(self, action: #selector(startTranscribing), for: .touchDown)
-        microphoneButton.addTarget(self, action: #selector(stopTranscribing), for: .touchUpInside)
-        microphoneButton.addTarget(self, action: #selector(stopTranscribing), for: .touchUpOutside)
-        inputToolbar.contentView.leftBarButtonItem = microphoneButton
-        
+    func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
+        return messageList.count
     }
     
-    func setupSender() {
-        senderId = User.me.rawValue
-        senderDisplayName = User.getName(User.me)
+    func currentSender() -> Sender {
+        return current
     }
     
-    override func didPressSend(
-        _ button: UIButton!,
-        withMessageText text: String!,
-        senderId: String!,
-        senderDisplayName: String!,
-        date: Date!) {
+    func numberOfMessages(in messagesCollectionView: MessagesCollectionView) -> Int {
+        return messageList.count
+    }
+    
+    func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
+        return messageList[indexPath.section]
+    }
+    
+    func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+        let name = message.sender.displayName
+        return NSAttributedString(string: name, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .caption1)])
+    }
+    
+    func cellBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         
-        let message = JSQMessage(
-            senderId: User.me.rawValue,
-            senderDisplayName: User.getName(User.me),
-            date: date,
-            text: text
-        )
-        
-        if let message = message {
-            self.messages.append(message)
-            self.finishSendingMessage(animated: true)
+        struct AssistantDateFormatter {
+            static let formatter: DateFormatter = {
+                let formatter = DateFormatter()
+                formatter.dateStyle = .medium
+                return formatter
+            }()
         }
-        
-        // send text to conversation service
-        let request = MessageRequest(text: text, context: context)
-        conversation.message(
-            withWorkspace: workspace,
-            request: request,
-            failure: failure,
-            success: presentResponse
-        )
+        let formatter = AssistantDateFormatter.formatter
+        let dateString = formatter.string(from: message.sentDate)
+        return NSAttributedString(string: dateString, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .caption2)])
     }
     
-    override func didPressAccessoryButton(_ sender: UIButton!) {
-        // required by super class
+}
+
+// MARK: - MessagesDisplayDelegate
+extension ViewController: MessagesDisplayDelegate {
+    
+    // MARK: - Text Messages
+    func textColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        return isFromCurrentSender(message: message) ? .white : .darkText
+    }
+    
+    func detectorAttributes(for detector: DetectorType, and message: MessageType, at indexPath: IndexPath) -> [NSAttributedString.Key : Any] {
+        return MessageLabel.defaultAttributes
+    }
+    
+    func enabledDetectors(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> [DetectorType] {
+        return [.url, .address, .phoneNumber, .date]
+    }
+    
+    // MARK: - All Messages
+    func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        return isFromCurrentSender(message: message) ? UIColor(red: 69/255, green: 193/255, blue: 89/255, alpha: 1) : UIColor(red: 230/255, green: 230/255, blue: 230/255, alpha: 1)
+    }
+    
+    func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
+        let corner: MessageStyle.TailCorner = isFromCurrentSender(message: message) ? .bottomRight : .bottomLeft
+        return .bubbleTail(corner, .curved)
+    }
+    
+    func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        
+        let avatar = getAvatarFor(sender: message.sender)
+        avatarView.set(avatar: avatar)
+    }
+    
+    // MARK: - Location Messages
+    func annotationViewForLocation(message: MessageType, at indexPath: IndexPath, in messageCollectionView: MessagesCollectionView) -> MKAnnotationView? {
+        let annotationView = MKAnnotationView(annotation: nil, reuseIdentifier: nil)
+        let pinImage = #imageLiteral(resourceName: "pin")
+        annotationView.image = pinImage
+        annotationView.centerOffset = CGPoint(x: 0, y: -pinImage.size.height / 2)
+        return annotationView
+    }
+    
+    func animationBlockForLocation(message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> ((UIImageView) -> Void)? {
+        return { view in
+            view.layer.transform = CATransform3DMakeScale(0, 0, 0)
+            view.alpha = 0.0
+            UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0, options: [], animations: {
+                view.layer.transform = CATransform3DIdentity
+                view.alpha = 1.0
+            }, completion: nil)
+        }
     }
 }
 
-// MARK: Collection View Data Source
-extension ViewController {
+// MARK: - MessagesLayoutDelegate
+extension ViewController: MessagesLayoutDelegate {
     
-    override func collectionView(
-        _ collectionView: UICollectionView,
-        numberOfItemsInSection section: Int)
-        -> Int
-    {
-        return messages.count
+    func avatarPosition(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> AvatarPosition {
+        return AvatarPosition(horizontal: .natural, vertical: .messageBottom)
     }
     
-    override func collectionView(
-        _ collectionView: JSQMessagesCollectionView!,
-        messageDataForItemAt indexPath: IndexPath!)
-        -> JSQMessageData! {
-            return messages[indexPath.item]
+    func messagePadding(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIEdgeInsets {
+        if isFromCurrentSender(message: message) {
+            return UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 4)
+        } else {
+            return UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 30)
+        }
     }
     
-    override func collectionView(
-        _ collectionView: JSQMessagesCollectionView!,
-        messageBubbleImageDataForItemAt indexPath: IndexPath!)
-        -> JSQMessageBubbleImageDataSource! {
-            let message = messages[indexPath.item]
-            let isOutgoing = (message.senderId == senderId)
-            let bubble = (isOutgoing) ? outgoingBubble : incomingBubble
-            return bubble
+    func cellTopLabelAlignment(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> LabelAlignment {
+        if isFromCurrentSender(message: message) {
+            return .messageTrailing(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 10))
+        } else {
+            return .messageLeading(UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0))
+        }
     }
     
-    override func collectionView(
-        _ collectionView: JSQMessagesCollectionView!,
-        avatarImageDataForItemAt indexPath: IndexPath!)
-        -> JSQMessageAvatarImageDataSource! {
-            let message = messages[indexPath.item]
-            return User.getAvatar(message.senderId)
+    func cellBottomLabelAlignment(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> LabelAlignment {
+        if isFromCurrentSender(message: message) {
+            return .messageLeading(UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0))
+        } else {
+            return .messageTrailing(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 10))
+        }
     }
     
-    override func collectionView(
-        _ collectionView: UICollectionView,
-        cellForItemAt indexPath: IndexPath)
-        -> UICollectionViewCell
-    {
-        let cell = super.collectionView(
-            collectionView,
-            cellForItemAt: indexPath
-        )
-        let jsqCell = cell as! JSQMessagesCollectionViewCell
-        let message = messages[indexPath.item]
-        let isOutgoing = (message.senderId == senderId)
-        jsqCell.textView.textColor = (isOutgoing) ? .white : .black
-        return jsqCell
+    func footerViewSize(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGSize {
+        
+        return CGSize(width: messagesCollectionView.bounds.width, height: 10)
+    }
+    
+    // MARK: - Location Messages
+    func heightForLocation(message: MessageType, at indexPath: IndexPath, with maxWidth: CGFloat, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 200
+    }
+    
+}
+
+// MARK: - MessageCellDelegate
+extension ViewController: MessageCellDelegate {
+    
+    func didTapAvatar(in cell: MessageCollectionViewCell) {
+        print("Avatar tapped")
+    }
+    
+    func didTapMessage(in cell: MessageCollectionViewCell) {
+        print("Message tapped")
+    }
+    
+    func didTapTopLabel(in cell: MessageCollectionViewCell) {
+        print("Top label tapped")
+    }
+    
+    func didTapBottomLabel(in cell: MessageCollectionViewCell) {
+        print("Bottom label tapped")
+    }
+    
+}
+
+// MARK: - MessageLabelDelegate
+extension ViewController: MessageLabelDelegate {
+    
+    func didSelectAddress(_ addressComponents: [String : String]) {
+        print("Address Selected: \(addressComponents)")
+    }
+    
+    func didSelectDate(_ date: Date) {
+        print("Date Selected: \(date)")
+    }
+    
+    func didSelectPhoneNumber(_ phoneNumber: String) {
+        print("Phone Number Selected: \(phoneNumber)")
+    }
+    
+    func didSelectURL(_ url: URL) {
+        print("URL Selected: \(url)")
+    }
+    
+}
+
+// MARK: - MessageInputBarDelegate
+extension ViewController: MessageInputBarDelegate {
+    
+    func messageInputBar(_ inputBar: MessageInputBar, didPressSendButtonWith text: String) {
+        
+        guard let assist = assistant else {
+            showAlert(.missingAssistantCredentials)
+            return
+        }
+        
+        guard let workspace = workspaceID else {
+            showAlert(.noWorkspaceId)
+            return
+        }
+        
+        let attributedText = NSAttributedString(string: text, attributes: [.font: UIFont.systemFont(ofSize: 14), .foregroundColor: UIColor.blue])
+        let id = UUID().uuidString
+        let message = AssistantMessages(attributedText: attributedText, sender: currentSender(), messageId: id, date: Date())
+        messageList.append(message)
+        inputBar.inputTextView.text = String()
+        messagesCollectionView.insertSections([messageList.count - 1])
+        messagesCollectionView.scrollToBottom()
+        
+        // cleanup text that gets sent to Watson, which doesn't care about whitespace or newline characters
+        let cleanText = text
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: "\n", with: ". ")
+        
+        // Lets pass the indent to Watson Assistant and see what the response is ?
+        // Get response from Watson based on user text create a message Request first
+        let messageRequest = MessageRequest(input: InputData(text:cleanText), context: self.context)
+        
+        // Call the Assistant API
+        assist.message(workspaceID: workspace, request: messageRequest, failure: failAssistantWithError) { response in
+            
+            for watsonMessage in response.output.text {
+                guard !watsonMessage.isEmpty else {
+                    continue
+                }
+                // Set current context
+                self.context = response.context
+                DispatchQueue.main.async {
+                    
+                    let attributedText = NSAttributedString(string: watsonMessage, attributes: [.font: UIFont.systemFont(ofSize: 14), .foregroundColor: UIColor.blue])
+                    let id = UUID().uuidString
+                    let message = AssistantMessages(attributedText: attributedText, sender: self.watson, messageId: id, date: Date())
+                    self.messageList.append(message)
+                    inputBar.inputTextView.text = String()
+                    self.messagesCollectionView.insertSections([self.messageList.count - 1])
+                    self.messagesCollectionView.scrollToBottom()
+                    
+                }
+            }
+        }
     }
 }
+
+
+
+
